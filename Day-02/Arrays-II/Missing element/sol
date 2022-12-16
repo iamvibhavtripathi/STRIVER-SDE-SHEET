@@ -1,0 +1,38 @@
+/* 
+  problem link: https://leetcode.com/problems/missing-number/description/
+ */
+ 
+ code:
+ 
+ Approach-1: using index and element by sorting ....Simple Brute Force
+ 
+ 
+ Approach-2:
+  calculate total sum of all elements expected in array using n*(n-1)/2 formulae: 
+  
+  code: 
+            int missingNumber(vector<int>& nums) {
+    int sum=0;
+    int total = (nums.size())*(nums.size()+1)/2;
+    for(int i=0 ; i<nums.size() ; i++){
+        sum+=nums[i];
+    }
+    return total-sum;
+    }
+
+
+Approach-3:  Using XOR operation with same array/vector
+
+code:
+
+        int missingNumber(vector<int>& nums) {
+    
+    int res = nums.size();
+      int ind=0;  
+        for(int i : nums){
+          res^=i;
+          res^=ind;
+            ind++;
+        }
+        return res;
+    }
