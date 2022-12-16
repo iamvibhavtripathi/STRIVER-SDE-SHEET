@@ -1,0 +1,61 @@
+In our code we start first of all declaring a few support variables:
+
+cand1 and cand2 that will store our currently most frequent elements;
+vote1 and vote2 that will somehow store their frequency relatively to other numbers (still, they do not measure frequency per se at the first pass, see below more about it);
+lmt which is the threshold every candidate has to pass in order to qualify.
+After that, we do a first linear run through nums and we can have a few cases:
+
+n == cand1, so we increment vote1;
+n == cand2, so we increment vote2;
+vote1 is 0, so we assign cand1 = n;
+vote2 is 0, so we assign cand2 = n;
+In all the other cases (meaning both vote1 > 0 and vote2 > 0 and n != cand1 and n != cand2), we decrease both vote1 and vote2.
+You might note that the order of the conditionals matters a lot (you might alter it, but then you would need extra conditionals) and that we will never end with both vote1 == 0 and vote2 == 0 at the same time.
+
+Now, as we mentioned before, both votes do not really equate to the actual frequency, since we basically decrease them everytime we encounter another number. Think of a base case like {1, 1, 1, 3, 3, 2, 2, 2} and if you execture it step by step, you will see that, for example, cand1 == 1 and also vote1 == 1, so definitely not its frequency.
+
+To obviate to this and get the actual frequency, we can reset both votes to 0 and then loop again through nums increasing these 2 counter variables acccordingly.
+
+Finally, time to return: you might just create an empty vector and add each candidate that passed the > lmt requirement, but I found it boring, so I opted to first of all make sure that vote1 >= vote2, always and then went for a nested ternary operator; alternatively you might have a more complex logic in the ternary operator if you do not check and potentially swap the values - up to your taste, really!
+
+Whatever you choose to do, the last step is pretty straightforward once you have 2 candidates and their actual frequency, so just return all the candidates that fit and you are done :)
+
+The code:
+
+class Solution {
+public:
+    vector<int> majorityElement(vector<int>& nums) {
+        // support variables
+        int cand1, vote1 = 0, cand2, vote2 = 0, lmt = nums.size() / 3;
+        // looking for the 2 most frequent items
+        for (int n: nums) {
+            if (n == cand1) vote1++;
+            else if (n == cand2) vote2++;
+            else if (!vote1) {
+                cand1 = n;
+                vote1++;
+            }
+            else if (!vote2) {
+                cand2 = n;
+                vote2++;
+            }
+            else {
+                vote1--;
+                vote2--;
+            }
+        }
+        // checking the actual frequency of the 2 most common items
+        vote1 = 0;
+        vote2 = 0;
+        for (int n: nums) {
+            if (n == cand1) vote1++;
+            if (n == cand2) vote2++;
+        }
+        // making sure cand1 has more votes
+        if (vote1 < vote2) {
+            swap(cand1, cand2);
+            swap(vote1, vote2);
+        }
+        return vote1 <= lmt ? vector<int>{} : vote2 <=lmt ? vector<int>{cand1} : vector<int>{cand1, cand2};
+    }
+};
