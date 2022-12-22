@@ -1,0 +1,34 @@
+class Solution {
+public:
+    ListNode* rotateRight(ListNode* head, int k) {
+        if (!head) return NULL;
+        if (!head->next) return head;
+        
+        k = k%len(head);
+        
+        ListNode* slow = head;
+        ListNode* fast = head;
+        for (int i=0; i < k; i++){
+            fast = fast->next;
+        }
+        if (!fast) return head;
+        
+        while (fast->next) {
+            slow = slow->next;
+            fast = fast->next;
+        }
+        fast->next = head;
+        head = slow->next;
+        slow->next = NULL;
+        return head;
+    }
+    
+    int len(ListNode* node){
+        if (!node) return 0;
+        return 1 + len(node->next);
+    }
+};
+The method is we keep 2 pointers slow and fast which is the distance between them at the beginning is k, then we increment them until fast reach the last element.
+Link fast with head.
+Disconnect slow with it's next node.
+
