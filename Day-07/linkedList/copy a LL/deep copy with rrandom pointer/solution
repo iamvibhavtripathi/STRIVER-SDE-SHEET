@@ -1,0 +1,116 @@
+Approach:- Intuitive brute force Approach::
+Complexity
+Time complexity:O(N)
+Space complexity:O(N)
+#1 Definiton using Hashmap(Extra Space). Code is self-explnatory...Do comment. in doubt....
+
+Code
+/*
+// Definition for a Node.
+class Node {
+public:
+    int val;
+    Node* next;
+    Node* random;
+    
+    Node(int _val) {
+        val = _val;
+        next = NULL;
+        random = NULL;
+    }
+};
+*/
+
+class Solution {
+public:
+    Node* copyRandomList(Node* head) {
+        if(!head) return NULL;
+        Node* temp= head;
+        unordered_map<Node*, Node*> mp;
+        while(temp!=NULL){
+            Node* copy = new Node(temp->val);
+            mp[temp]=copy;
+            temp=temp->next;
+        } 
+        temp= head;
+        while(temp!=NULL){
+            mp[temp]->next= mp[temp->next];
+            mp[temp]->random= mp[temp->random];
+            temp=temp->next;
+        }
+        return mp[head];
+    }
+};
+Approach:- Optimized Approach:: Two Pointer Approach::
+Complexity
+Time complexity:O(N)
+Space complexity:O(1)
+#Code
+
+
+/*
+// Definition for a Node.
+class Node {
+public:
+    int val;
+    Node* next;
+    Node* random;
+    
+    Node(int _val) {
+        val = _val;
+        next = NULL;
+        random = NULL;
+    }
+};
+*/
+
+class Solution {
+private:
+    void copy(Node* head){
+        Node* temp=head;
+        Node* curr= head->next;
+        while(temp){
+            Node* copy= new Node(temp->val);
+            temp->next=copy;
+            copy->next=curr;
+            temp=curr;
+            if(curr!=NULL) curr=curr->next;
+            //temp=temp->next;
+        }
+        
+    }
+
+    void handleRand(Node* head){
+        Node* temp= head;
+       // Node* curr= head->next;
+        while(temp){
+            if(temp->random)
+            temp->next->random= temp->random->next;
+            
+            temp=temp->next->next;
+        }
+    }
+
+    Node* detach(Node* head){
+        Node* dummy= new Node(-1);
+        Node* temp= head;
+        Node* tail= dummy;
+        while(temp){
+            tail->next= temp->next;
+            tail=tail->next;
+            temp->next= tail->next;
+            temp=temp->next;
+        }
+        return dummy->next;
+    }
+
+public:
+    Node* copyRandomList(Node* head) {
+        if(head==NULL) return NULL;
+        copy(head);
+        handleRand(head);
+       return detach(head);
+
+    }
+};
+0
